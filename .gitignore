@@ -1,0 +1,20 @@
+# Ignore stuff that is not ready to be released
+
+NOGIT__*
+
+# We should not ship the build results
+
+8bd-u2cw.ko
+.8bd-u2cw.ko.cmd
+8bd-u2cw.mod
+8bd-u2cw.mod.c
+.8bd-u2cw.mod.cmd
+8bd-u2cw.mod.o
+.8bd-u2cw.mod.o.cmd
+8bd-u2cw.o
+.8bd-u2cw.o.cmd
+
+Module.symvers
+modules.order
+.Module.symvers.cmd
+.modules.order.cmd
