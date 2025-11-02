@@ -46,6 +46,10 @@ make
 This step is optional but recommended. Before installing, you should try if the driver works as expected. Driver problems can cause your system to crash.
 
 ```bash
+# Unload conflicting drivers
+# This may show an ERROR if the driver isn't loaded. You can ignore that.
+sudo rmmod xpad
+
 # Load force feedback module (we need it)
 sudo modprobe ff_memless
 # Load the gamepad driver
@@ -64,6 +68,7 @@ sudo make install
 ```
 
 You are done - have fun!
+Some Linux distributions require a reboot. Restart your system if the driver does not work after installation.
 
 **Important:** When you update your system, you may also get a newer kernel version and need to repeat the installation.
 

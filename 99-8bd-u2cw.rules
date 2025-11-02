@@ -1,1 +1,1 @@
-ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="2dc8", ATTR{idProduct}=="310a", DRIVER=="usb", RUN+="/sbin/modprobe 8bd-u2cw"
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="2dc8", ATTR{idProduct}=="310a", ATTR{driver_override}="8bd-u2cw", RUN+="/sbin/modprobe 8bd-u2cw"
