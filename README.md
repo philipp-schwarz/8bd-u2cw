@@ -8,9 +8,9 @@ USB Driver for the **8BitDo Ultimate 2C** gamepad that just works.
 - USB and 2.4G supported
 - Force feedback enabled
 
-**Known issues**
+**Recent changes**
 
-* Shoulder triggers LT and RT are detected as buttons rather than triggers
+* v0.4 — Analog triggers (LT/RT) now work with full pressure sensitivity (Xbox-style)
 
 **Additional information**
 
@@ -74,6 +74,8 @@ SDL based games may have a wrong gamepad mapping included. Add the correct mappi
 ```bash
 cat sdl_profile_export.sh >> ~/.profile
 ```
+
+> **Upgrading from v0.3.x?** Your `~/.profile` already has an older `SDL_GAMECONTROLLERCONFIG` line. Open the file and **replace** the old line with the new one rather than appending — otherwise both definitions will accumulate. Both still work (the later definition wins via shell concatenation), but appending pollutes your profile.
 
 You are done - have fun!
 Some Linux distributions require a reboot. Restart your system if the driver does not work after installation.

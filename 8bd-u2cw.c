@@ -12,7 +12,7 @@
  *    - Force feedback enabled
  *
  * Known issues:
- *    - Shoulder triggers LT and RT work as buttons rather than triggers
+ *    (none currently tracked)
  *
  * Additional information:
  *    - Experimental: L4 and R4 buttons require a macro
@@ -25,13 +25,14 @@
  *  v0.1 - 2025-09-23 - Initial version
  *  v0.2 - 2025-10-09 - Force feedback added
  *  v0.3 - 2025-10-26 - Optimized cleanup
+ *  v0.4 - 2026-04-25 - Analog triggers (LT/RT) exposed as ABS_Z/ABS_RZ
  *
  ******************************************************************************/
 
 #define GAMEPAD_NAME "8BitDo Ultimate 2C"
 
 #define DRIVER_NAME "8bd-u2cw"
-#define DRIVER_VERSION "0.3.0"
+#define DRIVER_VERSION "0.4.0"
 
 #define PACKET_SIZE 32
 
@@ -83,11 +84,9 @@ struct gamepad_state {
 	bool dpad_bottom;
 	bool dpad_left;
 
-	// Shoulder trigger
+	// Shoulder trigger (analog)
 	uint8_t trigger_lt;
 	uint8_t trigger_rt;
-	bool trigger_lt_button;
-	bool trigger_rt_button;
 
 	// Axis
 	int16_t stick_left_x;
@@ -241,13 +240,9 @@ static int gamepad_input_connect(struct gamepad *gamepad) {
 	input_set_capability(device, EV_KEY, BTN_TL);
 	input_set_capability(device, EV_KEY, BTN_TR);
 
-	input_set_capability(device, EV_KEY, BTN_TL2);
-	input_set_capability(device, EV_KEY, BTN_TR2);
-
-	/* LT and RT as trigger - does not work as expected
+	// LT and RT as analog triggers (Xbox-style)
 	input_set_abs_params(device, ABS_Z, 0, 255, 0, 0);
 	input_set_abs_params(device, ABS_RZ, 0, 255, 0, 0);
-	*/
 
 	// Stick buttons
 	input_set_capability(device, EV_KEY, BTN_THUMBL);
@@ -339,13 +334,8 @@ static void gamepad_input_process(struct gamepad *gamepad) {
 		input_report_abs(device, ABS_RX, state->stick_right_x);
 		input_report_abs(device, ABS_RY, -state->stick_right_y); // here too
 
-		input_report_key(device, BTN_TL2, state->trigger_lt_button);
-		input_report_key(device, BTN_TR2, state->trigger_rt_button);
-
-		/* LT and RT as trigger - does not work as expected
 		input_report_abs(device, ABS_Z, state->trigger_lt);
 		input_report_abs(device, ABS_RZ, state->trigger_rt);
-		*/
 
 		input_sync(device);
 	}
@@ -388,19 +378,9 @@ static void gamepad_in_cb(struct urb *urb) {
 		state->button_x           = data[3] & 64;
 		state->button_y           = data[3] & 128;
 
-		// Trigger
+		// Trigger (analog, full 0-255 range)
 		state->trigger_lt         = data[4];
 		state->trigger_rt         = data[5];
-
-		// Virtual buttons from triggers
-		if (state->trigger_lt < 16)
-			state->trigger_lt_button = false;
-		else if (state->trigger_lt > 32)
-			state->trigger_lt_button = true;
-		if (state->trigger_rt < 16)
-			state->trigger_rt_button = false;
-		else if (state->trigger_rt > 32)
-			state->trigger_rt_button = true;
 
 		// Axis
 		state->stick_left_x       = (data[7]<<8) + data[6];
